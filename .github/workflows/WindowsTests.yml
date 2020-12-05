@@ -1,0 +1,42 @@
+name: Windows Tests
+
+on: [push]
+
+jobs:
+  RunTests:
+    runs-on: windows-2019
+    strategy:
+      fail-fast: false
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: 'recursive'
+
+    - name: Restore packages or run vcpkg to build and cache them
+      uses: lukka/run-vcpkg@main
+      id: runvcpkg
+      with:
+        vcpkgArguments: gtest
+        vcpkgTriplet: x64-windows
+        vcpkgDirectory: '${{runner.workspace}}/Cache/vcpkg'
+        vcpkgGitCommitId: '42456b785a4508386f080ae8fad2642e056b747d'
+
+    - name: Prints outputs of run-vcpkg task
+      run: echo "'${{steps.runvcpkg.outputs.RUNVCPKG_VCPKG_ROOT_OUT}}' '${{steps.runvcpkg.outputs.RUNVCPKG_VCPKG_TRIPLET_OUT}}' "
+
+    - name: Prepare build
+      working-directory: ${{github.workspace}}
+      run: cmake -E make_directory ${{github.workspace}}/Build
+
+    - name: Run toolchain
+      working-directory: ${{github.workspace}}/Build
+      run: cmake .. -DCMAKE_BUILD_TYPE=Release -DTESTS=ON -DCMAKE_TOOLCHAIN_FILE=${{runner.workspace}}/Cache/vcpkg/scripts/buildsystems/vcpkg.cmake
+
+    - name: Build
+      working-directory: ${{github.workspace}}/Build
+      run: cmake --build . --config Release
+
+    - name: Run tests
+      working-directory: ${{github.workspace}}/Build
+      run: ctest -C Release

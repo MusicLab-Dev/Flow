@@ -1,0 +1,9 @@
+[submodule "CompileOptions"]
+	path = CompileOptions
+	url = git@github.com:MusicLab-Dev/CompileOptions.git
+[submodule "Core"]
+	path = Core
+	url = git@github.com:MusicLab-Dev/Core.git
+[submodule "External/taskflow"]
+	path = External/taskflow
+	url = https://github.com/taskflow/taskflow.git
