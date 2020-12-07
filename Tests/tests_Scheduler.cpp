@@ -190,3 +190,19 @@ TEST(Scheduler, DynamicTask)
     graph.wait();
     ASSERT_EQ(trigger, 4);
 }
+
+TEST(Scheduler, RepeatBasics)
+{
+    Flow::Scheduler scheduler(1);
+    Flow::Graph graph;
+    int trigger = 0;
+
+    graph.setRepeatCallback([&trigger] {
+        int x = trigger;
+        return x != 3;
+    });
+    graph.emplace([&trigger] { ++trigger; });
+    scheduler.schedule(graph);
+    graph.wait();
+    ASSERT_EQ(trigger, 3);
+}

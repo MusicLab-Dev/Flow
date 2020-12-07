@@ -6,6 +6,7 @@ get_filename_component(FlowDir ${CMAKE_CURRENT_LIST_FILE} PATH)
 set(FlowSources
     ${FlowDir}/Graph.hpp
     ${FlowDir}/Graph.ipp
+    ${FlowDir}/Graph.cpp
     ${FlowDir}/Node.hpp
     ${FlowDir}/NodeType.hpp
     ${FlowDir}/Scheduler.cpp

@@ -38,7 +38,9 @@ public:
     /** @brief Destroy and join all workers */
     ~Scheduler(void);
 
-    /** @brief Schedule a graph of tasks */
+    /** @brief Schedule a graph of tasks
+     *  IsRepeating is used internally to repeat graphs */
+    template<bool IsRepeating = false>
     void schedule(Graph &task);
 
     /** @brief Schedule a task */
