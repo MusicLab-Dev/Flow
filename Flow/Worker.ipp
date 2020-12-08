@@ -34,7 +34,7 @@ inline void Flow::Worker::scheduleNode(Node * const node)
         node->joined = 0;
         _cache.parent->schedule(node);
     }
-};
+}
 
 inline void Flow::Worker::blockingGraphSchedule(Graph &graph)
 {
@@ -47,26 +47,26 @@ inline void Flow::Worker::blockingGraphSchedule(Graph &graph)
     }
 }
 
-inline void Flow::Worker::dispatchStaticNode(Node * const node)
+inline std::uint32_t Flow::Worker::dispatchStaticNode(Node * const node)
 {
     if (!node->bypass.load()) [[likely]]
         std::get<static_cast<std::size_t>(NodeType::Static)>(node->workData)();
     for (Node * const link : node->linkedTo)
         scheduleNode(link);
-    node->root->childJoined();
-};
+    return 1u;
+}
 
-inline void Flow::Worker::dispatchDynamicNode(Node * const node)
+inline std::uint32_t Flow::Worker::dispatchDynamicNode(Node * const node)
 {
     if (!node->bypass.load()) [[likely]] {
         auto &dynamic = std::get<static_cast<std::size_t>(NodeType::Dynamic)>(node->workData);
         dynamic.func(dynamic.graph);
         blockingGraphSchedule(dynamic.graph);
     }
-    node->root->childJoined();
+    return 1u;
 }
 
-inline void Flow::Worker::dispatchSwitchNode(Node * const node)
+inline std::uint32_t Flow::Worker::dispatchSwitchNode(Node * const node)
 {
     const auto index = std::get<static_cast<std::size_t>(NodeType::Switch)>(node->workData)();
     const auto count = node->linkedTo.size();
@@ -76,10 +76,10 @@ inline void Flow::Worker::dispatchSwitchNode(Node * const node)
     coreAssert(index >= 0ul && index < count,
         throw std::logic_error("Invalid switch task return index"));
     scheduleNode(node->linkedTo[index]);
-    node->root->childrenJoined(count);
-};
+    return count;
+}
 
-inline void Flow::Worker::dispatchGraphNode(Node * const node)
+inline std::uint32_t Flow::Worker::dispatchGraphNode(Node * const node)
 {
     if (!node->bypass.load()) [[likely]] {
         auto &graph = std::get<static_cast<std::size_t>(NodeType::Graph)>(node->workData);
@@ -87,5 +87,5 @@ inline void Flow::Worker::dispatchGraphNode(Node * const node)
     }
     for (const auto link : node->linkedTo)
         scheduleNode(link);
-    node->root->childJoined();
-};
+    return 1u;
+}

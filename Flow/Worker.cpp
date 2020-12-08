@@ -30,31 +30,35 @@ void Flow::Worker::run(void)
 void Flow::Worker::work(Task &task)
 {
     try {
+        std::uint32_t joinCount;
         switch (task.type()) {
         case NodeType::Static:
-            dispatchStaticNode(task.node());
+            joinCount = dispatchStaticNode(task.node());
             break;
         case NodeType::Dynamic:
-            dispatchDynamicNode(task.node());
+            joinCount = dispatchDynamicNode(task.node());
             break;
         case NodeType::Switch:
-            dispatchSwitchNode(task.node());
+            joinCount = dispatchSwitchNode(task.node());
             break;
         case NodeType::Graph:
-            dispatchGraphNode(task.node());
+            joinCount = dispatchGraphNode(task.node());
             break;
         default:
             throw std::logic_error("Flow::Worker::Work: Undefined node");
         }
-        if (!task.hasNotification()) [[likely]]
+        if (!task.hasNotification()) {
+            task.node()->root->childrenJoined(joinCount);
             return;
-        // If the task has notification, loop until parent scheduler receive it
+        }
+        // If the task has notification, loop until parent scheduler accept it
         while (!_cache.parent->notify(task) && state() == State::Running) {
             if (Task task; _queue.pop(task) || _cache.parent->steal(task))
                 work(task);
             else
                 std::this_thread::yield();
         }
+        task.node()->root->childrenJoined(joinCount);
     } catch (const std::exception &e) {
         std::cout << "Flow::Worker::work: Exception thrown in task '" << task.name() << "': " << e.what() << std::endl;
     } catch (...) {

@@ -31,7 +31,7 @@ TEST(Scheduler, SequenceTask)
 {
     Flow::Scheduler scheduler(1);
     Flow::Graph graph;
-    int trigger = false;
+    std::atomic<int> trigger = false;
     auto func = [&trigger] {
         ++trigger;
     };
@@ -48,7 +48,7 @@ TEST(Scheduler, SequenceTask)
 TEST(Scheduler, NotifyTask)
 {
     Flow::Scheduler scheduler(1);
-    int trigger = false;
+    std::atomic<int> trigger = false;
     auto func = [&trigger] {
         ++trigger;
     };
@@ -91,7 +91,7 @@ TEST(Scheduler, MergeTask)
 TEST(Scheduler, ConditionTask)
 {
     Flow::Scheduler scheduler;
-    int trigger = 0;
+    std::atomic<int> trigger = 0;
     Flow::Graph graph;
 
     auto a = graph.emplace([&trigger]() -> bool { return trigger % 2; });
@@ -116,7 +116,7 @@ TEST(Scheduler, ConditionTask)
 TEST(Scheduler, SwitchTask)
 {
     Flow::Scheduler scheduler;
-    int trigger = 0;
+    std::atomic<int> trigger = 0;
     Flow::Graph graph;
 
     auto a = graph.emplace([&trigger]() -> int { return trigger; });
@@ -139,7 +139,7 @@ TEST(Scheduler, SwitchTask)
 TEST(Scheduler, GraphTask)
 {
     Flow::Scheduler scheduler;
-    int trigger = 0;
+    std::atomic<int> trigger = 0;
     auto func = [&trigger] { trigger += 1; };
     auto func2 = [&trigger] { trigger += 2; };
 
@@ -170,7 +170,7 @@ TEST(Scheduler, DynamicTask)
 {
     Flow::Scheduler scheduler;
     Flow::Graph graph;
-    int trigger = 0;
+    std::atomic<int> trigger = 0;
     bool clear = false;
 
     graph.emplace([&trigger, &clear](Flow::Graph &sub) {

@@ -79,16 +79,16 @@ private:
     void scheduleNode(Node * const node);
 
     /** @brief Helper used to process a Static node */
-    void dispatchStaticNode(Node * const node);
+    [[nodiscard]] std::uint32_t dispatchStaticNode(Node * const node);
 
     /** @brief Helper used to process a Dynamic node */
-    void dispatchDynamicNode(Node * const node);
+    [[nodiscard]] std::uint32_t dispatchDynamicNode(Node * const node);
 
     /** @brief Helper used to process a Switch node */
-    void dispatchSwitchNode(Node * const node);
+    [[nodiscard]] std::uint32_t dispatchSwitchNode(Node * const node);
 
     /** @brief Helper used to process a Graph node */
-    void dispatchGraphNode(Node * const node);
+    [[nodiscard]] std::uint32_t dispatchGraphNode(Node * const node);
 };
 
 static_assert_sizeof(Flow::Worker, 6 * Core::CacheLineSize);
