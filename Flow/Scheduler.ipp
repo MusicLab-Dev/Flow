@@ -3,13 +3,15 @@
  * @ Description: Scheduler
  */
 
-#pragma once
-
+template<bool IsRepeating>
 inline void Flow::Scheduler::schedule(Graph &graph)
 {
-    if (graph.running())
-        throw std::logic_error("Flow::Scheduler::schedule: Can't schedule a graph if it is already running");
-    graph.setRunning(true);
+    if constexpr (!IsRepeating) {
+        if (graph.running())
+            throw std::logic_error("Flow::Scheduler::schedule: Can't schedule a graph if it is already running");
+        graph.setRunning(true);
+        graph.setScheduler(this);
+    }
     for (auto &child : graph) {
         if (child->linkedFrom.empty())
             schedule(Task(child.node()));
