@@ -16,7 +16,7 @@
 
 namespace Flow
 {
-    struct NodeInstance;
+    class NodeInstance;
     class Graph;
 
     class Scheduler;

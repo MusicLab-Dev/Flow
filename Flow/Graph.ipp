@@ -5,7 +5,7 @@
 
 inline void Flow::Graph::acquire(const Graph &other) noexcept
 {
-    if (other._data) [[likely]] {
+    if (other._data) {
         _data = other._data;
         ++_data->sharedCount;
     }
@@ -13,7 +13,7 @@ inline void Flow::Graph::acquire(const Graph &other) noexcept
 
 inline void Flow::Graph::release(void)
 {
-    if (_data && --_data->sharedCount == 0u) [[unlikely]] {
+    if (_data && --_data->sharedCount == 0u) {
         wait();
         _data->~Data();
         _Pool.deallocate(_data, sizeof(Data), alignof(Data));
@@ -22,7 +22,7 @@ inline void Flow::Graph::release(void)
 
 inline void Flow::Graph::construct(void) noexcept
 {
-    if (!_data) [[unlikely]]
+    if (!_data)
         _data = new (_Pool.allocate(sizeof(Data), alignof(Data))) Data {};
 }
 
@@ -51,7 +51,7 @@ inline void Flow::Graph::clearLinks(void) noexcept
 
 inline void Flow::Graph::clear(void)
 {
-    if (_data) [[likely]] {
+    if (_data) {
         wait();
         _data->children.clear();
     }

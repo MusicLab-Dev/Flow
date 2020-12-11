@@ -27,12 +27,12 @@ inline void Flow::Scheduler::schedule(const Task task) noexcept
     while (true) {
         while (true) {
             targetId = id + 1;
-            if (targetId == count) [[unlikely]]
+            if (targetId == count)
                 targetId = 0;
-            if (_lastWorkerId.compare_exchange_weak(id, targetId, std::memory_order_relaxed)) [[likely]]
+            if (_lastWorkerId.compare_exchange_weak(id, targetId, std::memory_order_relaxed))
                 break;
         }
-        if (_cache.workers[targetId].push(task)) [[likely]]
+        if (_cache.workers[targetId].push(task))
             break;
     }
 }

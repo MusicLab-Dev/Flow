@@ -49,7 +49,7 @@ inline void Flow::Worker::blockingGraphSchedule(Graph &graph)
 
 inline std::uint32_t Flow::Worker::dispatchStaticNode(Node * const node)
 {
-    if (!node->bypass.load()) [[likely]]
+    if (!node->bypass.load())
         std::get<static_cast<std::size_t>(NodeType::Static)>(node->workData)();
     for (Node * const link : node->linkedTo)
         scheduleNode(link);
@@ -58,7 +58,7 @@ inline std::uint32_t Flow::Worker::dispatchStaticNode(Node * const node)
 
 inline std::uint32_t Flow::Worker::dispatchDynamicNode(Node * const node)
 {
-    if (!node->bypass.load()) [[likely]] {
+    if (!node->bypass.load()) {
         auto &dynamic = std::get<static_cast<std::size_t>(NodeType::Dynamic)>(node->workData);
         dynamic.func(dynamic.graph);
         blockingGraphSchedule(dynamic.graph);
@@ -76,12 +76,12 @@ inline std::uint32_t Flow::Worker::dispatchSwitchNode(Node * const node)
     coreAssert(index >= 0ul && index < count,
         throw std::logic_error("Invalid switch task return index"));
     scheduleNode(node->linkedTo[index]);
-    return count;
+    return static_cast<std::uint32_t>(count);
 }
 
 inline std::uint32_t Flow::Worker::dispatchGraphNode(Node * const node)
 {
-    if (!node->bypass.load()) [[likely]] {
+    if (!node->bypass.load()) {
         auto &graph = std::get<static_cast<std::size_t>(NodeType::Graph)>(node->workData);
         blockingGraphSchedule(graph);
     }

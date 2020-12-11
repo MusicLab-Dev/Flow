@@ -9,8 +9,8 @@
 
 Flow::Worker::Worker(Scheduler * const parent, const std::size_t queueSize)
     : _cache(Cache {
-        parent: parent,
-        thd: std::thread()
+        parent,
+        std::thread()
     }),
     _queue(queueSize)
 {

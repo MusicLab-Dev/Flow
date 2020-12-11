@@ -18,7 +18,7 @@
 namespace Flow
 {
     struct Node;
-    struct NodeInstance;
+    class NodeInstance;
 
     class Graph;
 
@@ -87,8 +87,8 @@ struct alignas_double_cacheline Flow::Node
         // Special rule for the dynamic node which can't specify its graph
         if constexpr (std::is_same_v<DynamicFunc, Work> || std::is_constructible_v<DynamicFunc, Work>) {
             return DynamicNode {
-                func: std::forward<Work>(work),
-                graph: Graph()
+                std::forward<Work>(work),
+                Graph()
             };
         // If we can't directly initialize a SwitchNode but we can convert it
         } else if constexpr (!std::is_same_v<SwitchNode, Work> && std::is_constructible_v<SwitchNode, Work>) {
@@ -119,7 +119,7 @@ public:
     NodeInstance(NodeInstance &&other) noexcept { swap(other); }
 
     /** @brief Destroy the instance */
-    ~NodeInstance(void) noexcept_destructible(Node) { if (_node) [[likely]] Deallocate(_node); }
+    ~NodeInstance(void) { if (_node) Deallocate(_node); }
 
     /** @brief Get node pointer */
     [[nodiscard]] Node *node(void) noexcept { return _node; }
