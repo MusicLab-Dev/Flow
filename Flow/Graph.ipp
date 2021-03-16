@@ -32,6 +32,7 @@ inline Flow::Task Flow::Graph::emplace(Args &&...args)
     construct();
     const auto node = _data->children.push(std::forward<Args>(args)...).node();
     node->root = this;
+    _data->isPreprocessed = false;
     return Task(node);
 }
 
@@ -55,4 +56,10 @@ inline void Flow::Graph::clear(void)
         wait();
         _data->children.clear();
     }
+}
+
+inline void Flow::Graph::preprocess(void)
+{
+    if (!_data->isPreprocessed)
+        preprocessImpl();
 }

@@ -6,6 +6,7 @@
 template<bool IsRepeating>
 inline void Flow::Scheduler::schedule(Graph &graph)
 {
+    graph.preprocess();
     if constexpr (!IsRepeating) {
         if (graph.running())
             throw std::logic_error("Flow::Scheduler::schedule: Can't schedule a graph if it is already running");

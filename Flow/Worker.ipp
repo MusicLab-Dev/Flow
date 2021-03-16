@@ -68,15 +68,25 @@ inline std::uint32_t Flow::Worker::dispatchDynamicNode(Node * const node)
 
 inline std::uint32_t Flow::Worker::dispatchSwitchNode(Node * const node)
 {
-    const auto index = std::get<static_cast<std::size_t>(NodeType::Switch)>(node->workData)();
+    auto &switchTask = std::get<static_cast<std::size_t>(NodeType::Switch)>(node->workData);
+    const auto index = switchTask.func();
     const auto count = node->linkedTo.size();
+    std::size_t joinCount = 1u;
 
     coreAssert(!node->bypass.load(),
         throw std::logic_error("A branch task can't be bypassed"));
     coreAssert(index >= 0ul && index < count,
         throw std::logic_error("Invalid switch task return index"));
+    coreAssert(switchTask.joinCounts.size() == count,
+        throw std::logic_error("Invalid switch task preprocessing, expected " + std::to_string(count) + " join counts but have " + std::to_string(switchTask.joinCounts.size())));
     scheduleNode(node->linkedTo[index]);
-    return static_cast<std::uint32_t>(count);
+    for (std::size_t i = 0; i < count; ++i) {
+        if (i != index) {
+            joinCount += switchTask.joinCounts[i];
+        } else
+            continue;
+    }
+    return joinCount;
 }
 
 inline std::uint32_t Flow::Worker::dispatchGraphNode(Node * const node)

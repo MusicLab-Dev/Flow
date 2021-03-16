@@ -32,6 +32,7 @@ public:
         std::atomic<std::uint32_t> joined { 0 }; // Number of joined nodes
         std::atomic<std::uint16_t> sharedCount { 1 }; // Number of shared graph instances
         std::atomic<bool> running { false }; // True if the graph is already processing
+        bool isPreprocessed { false }; // True if the graph is already preprocessed and safe to schedule
         Scheduler *scheduler { nullptr }; // The scheduler that ran the graph
         Core::Functor<bool(void)> repeatCallback {}; // On true returned, it will immediatly repeat the graph after it succeeded
     };
@@ -108,6 +109,9 @@ public:
     /** @brief Clear the graph children */
     void clear(void);
 
+    /** @brief Ensure that the graph is ready to be scheduled (called by the Scheduler on schedule) */
+    void preprocess(void);
+
 
     /** @brief Get the number of owned nodes */
     [[nodiscard]] auto size(void) const noexcept { return _data->children.size(); }
@@ -140,6 +144,12 @@ private:
     Data *_data { nullptr };
 
     inline static std::pmr::synchronized_pool_resource _Pool {};
+
+    /** @brief Implementation of the preprocess algorithm */
+    void preprocessImpl(void);
+
+    /** @brief Count the numbr of ssubchildren of a node */
+    void countSubChildren(const Node &node, std::size_t &count);
 };
 
 static_assert_fit_eighth_cacheline(Flow::Graph);
