@@ -1,9 +1,10 @@
 cmake_minimum_required(VERSION 3.10 FATAL_ERROR)
-project(Flow)
 
 get_filename_component(FlowDir ${CMAKE_CURRENT_LIST_FILE} PATH)
 
-include(${FlowDir}/Atomic/Atomic.cmake)
+include(${FlowDir}/External/External.cmake)
+
+project(Flow)
 
 set(FlowSources
     ${FlowDir}/Graph.hpp
@@ -21,11 +22,11 @@ set(FlowSources
     ${FlowDir}/Worker.ipp
 )
 
-add_library(${PROJECT_NAME} ${FlowSources} ${AtomicSources})
+add_library(${PROJECT_NAME} ${FlowSources})
 
-target_include_directories(${PROJECT_NAME} PUBLIC ${FlowDir}/.. ${AtomicDir})
+target_include_directories(${PROJECT_NAME} PUBLIC ${FlowDir}/..)
 
-target_link_libraries(${PROJECT_NAME} PUBLIC Core ${AtomicLibraries})
+target_link_libraries(${PROJECT_NAME} PUBLIC Core AtomicWait)
 
 if(CODE_COVERAGE)
     target_compile_options(${PROJECT_NAME} PUBLIC --coverage)

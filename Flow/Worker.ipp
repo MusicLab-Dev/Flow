@@ -15,8 +15,7 @@ inline void Flow::Worker::start(void)
 
 inline void Flow::Worker::stop(void) noexcept
 {
-    auto currentState = state();
-    if (currentState == State::IDLE)
+    if (auto currentState = state(); currentState == State::IDLE)
         wakeUp(State::Stopping);
     else if (currentState == State::Running) {
         while (!_state.compare_exchange_strong(currentState, State::Stopping)) {
@@ -97,9 +96,9 @@ inline std::uint32_t Flow::Worker::dispatchSwitchNode(Node * const node)
         throw std::logic_error("Invalid switch task preprocessing, expected " + std::to_string(count) + " join counts but have " + std::to_string(switchTask.joinCounts.size())));
     scheduleNode(node->linkedTo[index]);
     for (std::size_t i = 0; i < count; ++i) {
-        if (i != index) {
+        if (i != index)
             joinCount += switchTask.joinCounts[i];
-        } else
+        else
             continue;
     }
     return joinCount;

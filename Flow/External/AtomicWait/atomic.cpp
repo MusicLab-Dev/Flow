@@ -22,9 +22,8 @@ THE SOFTWARE.
 
 */
 
-#include <atomic_wait>
-#include <barrier>
 #include <thread>
+#include <atomic_wait>
 
 #ifdef __TABLE
 
