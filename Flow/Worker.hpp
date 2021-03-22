@@ -7,6 +7,8 @@
 
 // This header must no be directly included, include 'Scheduler' instead
 
+#include <atomic_wait>
+
 #include <Core/MPMCQueue.hpp>
 
 #include "Graph.hpp"
@@ -22,7 +24,8 @@ class alignas_double_cacheline Flow::Worker
 public:
     /** @brief Current state of the worker */
     enum class State {
-        Running,    // Working is running
+        Running,    // Worker is running
+        IDLE,       // Worker is waiting for a new task
         Stopping,   // Worker is stopping
         Stopped,    // Worker is stopped
     };
@@ -53,6 +56,9 @@ public:
 
     /** @brief Get the task count of the queue */
     [[nodiscard]] std::size_t taskCount(void) const noexcept { return _queue.size(); }
+
+    /** @brief Notify that the worker should work right now */
+    void wakeUp(const State state) noexcept;
 
 private:
     struct Cache

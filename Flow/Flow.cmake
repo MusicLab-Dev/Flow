@@ -3,6 +3,8 @@ project(Flow)
 
 get_filename_component(FlowDir ${CMAKE_CURRENT_LIST_FILE} PATH)
 
+include(${FlowDir}/Atomic/Atomic.cmake)
+
 set(FlowSources
     ${FlowDir}/Graph.hpp
     ${FlowDir}/Graph.ipp
@@ -19,11 +21,11 @@ set(FlowSources
     ${FlowDir}/Worker.ipp
 )
 
-add_library(${PROJECT_NAME} ${FlowSources})
+add_library(${PROJECT_NAME} ${FlowSources} ${AtomicSources})
 
-target_include_directories(${PROJECT_NAME} PUBLIC ${FlowDir}/..)
+target_include_directories(${PROJECT_NAME} PUBLIC ${FlowDir}/.. ${AtomicDir})
 
-target_link_libraries(${PROJECT_NAME} PUBLIC Core)
+target_link_libraries(${PROJECT_NAME} PUBLIC Core ${AtomicLibraries})
 
 if(CODE_COVERAGE)
     target_compile_options(${PROJECT_NAME} PUBLIC --coverage)

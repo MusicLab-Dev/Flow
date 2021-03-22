@@ -21,8 +21,12 @@ void Flow::Worker::run(void)
     while (state() == State::Running) {
         if (Task task; _queue.pop(task) || _cache.parent->steal(task))
             work(task);
-        else
-            std::this_thread::yield();
+        else {
+            auto s = State::Running;
+            if (!_state.compare_exchange_weak(s, State::IDLE))
+                continue;
+            __cxx_atomic_wait(reinterpret_cast<State *>(&_state), State::IDLE, std::memory_order::memory_order_relaxed);
+        }
     }
     _state = State::Stopped;
 }

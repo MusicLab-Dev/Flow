@@ -16,7 +16,17 @@ inline void Flow::Worker::start(void)
 inline void Flow::Worker::stop(void) noexcept
 {
     auto currentState = state();
-    while (currentState == State::Running && !_state.compare_exchange_strong(currentState, State::Stopping));
+    if (currentState == State::IDLE)
+        wakeUp(State::Stopping);
+    else if (currentState == State::Running) {
+        while (!_state.compare_exchange_strong(currentState, State::Stopping)) {
+            if (currentState == State::IDLE) {
+                wakeUp(State::Stopping);
+                break;
+            } else if (currentState != State::Running)
+                break;
+        }
+    }
 }
 
 inline void Flow::Worker::join(void) noexcept
@@ -34,6 +44,12 @@ inline void Flow::Worker::scheduleNode(Node * const node)
         node->joined = 0;
         _cache.parent->schedule(node);
     }
+}
+
+inline void Flow::Worker::wakeUp(const State state) noexcept
+{
+    _state = state;
+    __cxx_atomic_notify_one(reinterpret_cast<State *>(&_state));
 }
 
 inline void Flow::Worker::blockingGraphSchedule(Graph &graph)
