@@ -110,7 +110,7 @@ public:
     void clear(void);
 
     /** @brief Ensure that the graph is ready to be scheduled (called by the Scheduler on schedule) */
-    void preprocess(void);
+    void preprocess(void) noexcept;
 
 
     /** @brief Get the number of owned nodes */
@@ -146,10 +146,10 @@ private:
     inline static std::pmr::synchronized_pool_resource _Pool {};
 
     /** @brief Implementation of the preprocess algorithm */
-    void preprocessImpl(void);
+    void preprocessImpl(void) noexcept;
 
     /** @brief Count the numbr of ssubchildren of a node */
-    void countSubChildren(const Node &node, std::size_t &count);
+    void countSubChildren(const Node &node, std::size_t &count, Core::TinyVector<const Node *> &cache) noexcept;
 };
 
 static_assert_fit_eighth_cacheline(Flow::Graph);
