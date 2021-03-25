@@ -136,6 +136,34 @@ TEST(Scheduler, SwitchTask)
     }
 }
 
+TEST(Scheduler, SwitchTaskAdvanced)
+{
+    Flow::Scheduler scheduler;
+    std::atomic<int> trigger = 0;
+    Flow::Graph graph;
+
+    auto a = graph.emplace([&trigger]() -> bool { return trigger != 0; });
+    auto b = graph.emplace([&trigger] { trigger = 1; });
+    auto c = graph.emplace([&trigger] { trigger = 2; });
+    auto d = graph.emplace([&trigger] { trigger = 3; });
+    auto e = graph.emplace([&trigger] { trigger = 4; });
+    auto f = graph.emplace([&trigger] { trigger = 5; });
+    b.succeed(a); // 0 returned
+    c.succeed(a); // 1 returned
+    d.succeed(c);
+    e.succeed(c);
+    f.succeed(d);
+    f.succeed(e);
+
+    ASSERT_EQ(trigger, 0);
+    scheduler.schedule(graph);
+    graph.wait();
+    ASSERT_EQ(trigger, 1);
+    scheduler.schedule(graph);
+    graph.wait();
+    ASSERT_EQ(trigger, 5);
+}
+
 TEST(Scheduler, GraphTask)
 {
     Flow::Scheduler scheduler;

@@ -58,7 +58,7 @@ inline void Flow::Graph::clear(void)
     }
 }
 
-inline void Flow::Graph::preprocess(void)
+inline void Flow::Graph::preprocess(void) noexcept
 {
     if (!_data->isPreprocessed)
         preprocessImpl();
