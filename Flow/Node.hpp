@@ -37,7 +37,7 @@ namespace Flow
     struct SwitchNode
     {
         SwitchFunc func;
-        Core::FlatVector<std::size_t> joinCounts {};
+        Core::FlatVector<std::uint32_t> joinCounts {};
     };
 
     /** @brief Graph node is used to construct nested graphs */

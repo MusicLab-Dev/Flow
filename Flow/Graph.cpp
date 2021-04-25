@@ -28,7 +28,7 @@ void Flow::Graph::preprocessImpl(void) noexcept
         auto &switchTask = std::get<static_cast<std::size_t>(Node::WorkType::Switch)>(node->workData);
         switchTask.joinCounts.reserve(node->linkedTo.size());
         for (const auto childNode : node->linkedTo) {
-            std::size_t count { 1u };
+            std::uint32_t count { 1u };
             cache.clear();
             countSubChildren(*childNode, count, cache);
             switchTask.joinCounts.push(count);
@@ -37,7 +37,7 @@ void Flow::Graph::preprocessImpl(void) noexcept
     _data->isPreprocessed = true;
 }
 
-void Flow::Graph::countSubChildren(const Node &node, std::size_t &count, Core::TinyVector<const Node *> &cache) noexcept
+void Flow::Graph::countSubChildren(const Node &node, std::uint32_t &count, Core::TinyVector<const Node *> &cache) noexcept
 {
     for (const auto childNode : node.linkedTo) {
         if (cache.find(childNode) == cache.end()) {

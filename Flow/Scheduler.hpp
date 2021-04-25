@@ -14,7 +14,7 @@
 namespace Flow
 {
     class Scheduler;
-};
+}
 
 /** @brief Schedule graph of tasks using thread workers */
 class alignas_double_cacheline Flow::Scheduler

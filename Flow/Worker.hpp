@@ -17,7 +17,7 @@ namespace Flow
 {
     class Worker;
     class Scheduler;
-};
+}
 
 class alignas_double_cacheline Flow::Worker
 {

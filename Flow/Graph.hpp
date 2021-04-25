@@ -149,7 +149,7 @@ private:
     void preprocessImpl(void) noexcept;
 
     /** @brief Count the numbr of ssubchildren of a node */
-    void countSubChildren(const Node &node, std::size_t &count, Core::TinyVector<const Node *> &cache) noexcept;
+    void countSubChildren(const Node &node, std::uint32_t &count, Core::TinyVector<const Node *> &cache) noexcept;
 };
 
 static_assert_fit_eighth_cacheline(Flow::Graph);

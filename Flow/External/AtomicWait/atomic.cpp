@@ -30,7 +30,7 @@ THE SOFTWARE.
 contended_t contention[256];
 
 contended_t * __contention(volatile void const * p) {
-    return contention + ((uintptr_t)p & 255);
+    return contention + (reinterpret_cast<uintptr_t>(p) & 255);
 }
 
 #endif //__TABLE
