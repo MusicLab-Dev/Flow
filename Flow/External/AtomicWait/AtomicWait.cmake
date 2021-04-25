@@ -12,10 +12,16 @@ set(AtomicSources
 
 add_library(${PROJECT_NAME} ${AtomicSources})
 
-target_link_libraries(${PROJECT_NAME} PUBLIC
-    Threads::Threads
-    m
-)
+if (MSVC)
+    target_link_libraries(${PROJECT_NAME} PUBLIC
+        Threads::Threads
+        synchronization
+    )
+else()
+    target_link_libraries(${PROJECT_NAME} PUBLIC
+        Threads::Threads
+    )
+endif()
 
 target_include_directories(${PROJECT_NAME} PUBLIC
     ${AtomicWaitDir}
