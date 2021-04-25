@@ -2,9 +2,11 @@ cmake_minimum_required(VERSION 3.13 FATAL_ERROR)
 
 get_filename_component(FlowRoot ${CMAKE_CURRENT_LIST_FILE} PATH)
 
-include(${FlowRoot}/CompileOptions/CompileOptions.cmake)
+include(${FlowRoot}/CompileOptions/ToolchainOptions.cmake)
 
 project(Flow)
+
+include(${FlowRoot}/CompileOptions/CompileOptions.cmake)
 
 add_submodule_directory(${FlowRoot}/Core)
 
