@@ -7,7 +7,9 @@
 
 // This header must no be directly included, include 'Scheduler' instead
 
+#ifndef WIN32
 #include <atomic_wait>
+#endif
 
 #include <Core/MPMCQueue.hpp>
 
