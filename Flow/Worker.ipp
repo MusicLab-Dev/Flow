@@ -48,7 +48,7 @@ inline void Flow::Worker::scheduleNode(Node * const node)
 inline void Flow::Worker::wakeUp(const State state) noexcept
 {
     _state = state;
-    _state.notify_one();
+    std::atomic_notify_one(&_state);
 }
 
 inline void Flow::Worker::blockingGraphSchedule(Graph &graph)
