@@ -90,7 +90,7 @@ inline std::uint32_t Flow::Worker::dispatchSwitchNode(Node * const node)
 
     coreAssert(!node->bypass.load(),
         throw std::logic_error("A branch task can't be bypassed"));
-    coreAssert(index >= 0ul && index < count,
+    coreAssert(index < count,
         throw std::logic_error("Invalid switch task return index"));
     coreAssert(switchTask.joinCounts.size() == count,
         throw std::logic_error("Invalid switch task preprocessing, expected " + std::to_string(count) + " join counts but have " + std::to_string(switchTask.joinCounts.size())));
