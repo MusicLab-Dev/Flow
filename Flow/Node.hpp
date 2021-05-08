@@ -9,6 +9,7 @@
 
 #include <memory_resource>
 #include <variant>
+#include <atomic>
 
 #include <Core/FlatVector.hpp>
 #include <Core/SmallVector.hpp>

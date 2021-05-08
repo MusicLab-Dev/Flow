@@ -8,6 +8,7 @@
 #include <thread>
 #include <memory>
 #include <memory_resource>
+#include <atomic>
 
 #include <Core/Assert.hpp>
 #include <Core/Vector.hpp>
