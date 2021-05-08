@@ -6,23 +6,29 @@ include(${FlowDir}/External/External.cmake)
 
 project(Flow)
 
-set(FlowSources
+set(FlowPrecompiledHeaders
     ${FlowDir}/Graph.hpp
-    ${FlowDir}/Graph.ipp
-    ${FlowDir}/Graph.cpp
     ${FlowDir}/Node.hpp
     ${FlowDir}/NodeType.hpp
-    ${FlowDir}/Scheduler.cpp
     ${FlowDir}/Scheduler.hpp
-    ${FlowDir}/Scheduler.ipp
     ${FlowDir}/Task.hpp
+    ${FlowDir}/Worker.hpp
+)
+
+set(FlowSources
+    ${FlowPrecompiledHeaders}
+    ${FlowDir}/Graph.ipp
+    ${FlowDir}/Graph.cpp
+    ${FlowDir}/Scheduler.cpp
+    ${FlowDir}/Scheduler.ipp
     ${FlowDir}/Task.ipp
     ${FlowDir}/Worker.cpp
-    ${FlowDir}/Worker.hpp
     ${FlowDir}/Worker.ipp
 )
 
 add_library(${PROJECT_NAME} ${FlowSources})
+
+target_precompile_headers(${PROJECT_NAME} PUBLIC ${FlowPrecompiledHeaders})
 
 target_include_directories(${PROJECT_NAME} PUBLIC ${FlowDir}/..)
 
