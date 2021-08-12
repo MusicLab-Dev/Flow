@@ -1,17 +1,17 @@
-project(AudioBenchmarks)
+project(FlowBenchmarks)
 
 find_package(benchmark REQUIRED)
 
-get_filename_component(AudioBenchmarksDir ${CMAKE_CURRENT_LIST_FILE} PATH)
+get_filename_component(FlowBenchmarksDir ${CMAKE_CURRENT_LIST_FILE} PATH)
 
-set(AudioBenchmarksSources
-    ${AudioBenchmarksDir}/Main.cpp
+set(FlowBenchmarksSources
+    ${FlowBenchmarksDir}/Main.cpp
 )
 
-add_executable(${PROJECT_NAME} ${AudioBenchmarksSources})
+add_executable(${PROJECT_NAME} ${FlowBenchmarksSources})
 
 target_link_libraries(${PROJECT_NAME}
 PUBLIC
-    Audio
+    Flow
     benchmark::benchmark
 )
