@@ -28,7 +28,10 @@ set(FlowSources
 
 add_library(${PROJECT_NAME} ${FlowSources})
 
-target_precompile_headers(${PROJECT_NAME} PUBLIC ${FlowPrecompiledHeaders})
+if (CMAKE_CXX_COMPILER_ID MATCHES "Apple")
+elseif()
+    target_precompile_headers(${PROJECT_NAME} PUBLIC ${FlowPrecompiledHeaders})
+endif()
 
 target_include_directories(${PROJECT_NAME} PUBLIC ${FlowDir}/..)
 
