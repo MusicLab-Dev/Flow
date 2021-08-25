@@ -7,7 +7,7 @@
 
 // This header must no be directly included, include 'Graph' instead
 
-#include <memory_resource>
+#include <Core/PMR.hpp>
 #include <variant>
 #include <atomic>
 

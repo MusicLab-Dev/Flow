@@ -25,7 +25,7 @@ void Flow::Worker::run(void)
             auto s = State::Running;
             if (!_state.compare_exchange_weak(s, State::IDLE))
                 continue;
-            std::atomic_wait_explicit(&_state, State::IDLE, std::memory_order_relaxed);
+            atomic_sync::atomic_wait_explicit(&_state, State::IDLE, std::memory_order_relaxed);
         }
     }
     _state = State::Stopped;

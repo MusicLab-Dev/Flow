@@ -8,7 +8,7 @@
 // This header must no be directly included, include 'Scheduler' instead
 
 #ifndef WIN32
-#include <atomic_wait>
+# include <atomic_wait>
 #endif
 
 #include <Core/MPMCQueue.hpp>
@@ -25,7 +25,11 @@ class alignas_double_cacheline Flow::Worker
 {
 public:
     /** @brief Current state of the worker */
+#ifdef __APPLE__ 
+    enum State { // Apple does not allow the enum class as a valid integral for atomic operations
+#else
     enum class State {
+#endif
         Running,    // Worker is running
         IDLE,       // Worker is waiting for a new task
         Stopping,   // Worker is stopping
