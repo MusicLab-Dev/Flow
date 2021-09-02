@@ -7,12 +7,9 @@
 
 // This header must no be directly included, include 'Scheduler' instead
 
-#ifndef WIN32
-# include <atomic_wait>
-#endif
-
 #include <Core/MPMCQueue.hpp>
 
+#include "AtomicWait.hpp"
 #include "Graph.hpp"
 
 namespace Flow
@@ -25,7 +22,7 @@ class alignas_double_cacheline Flow::Worker
 {
 public:
     /** @brief Current state of the worker */
-#ifdef __APPLE__ 
+#ifdef __APPLE__
     enum State { // Apple does not allow the enum class as a valid integral for atomic operations
 #else
     enum class State {

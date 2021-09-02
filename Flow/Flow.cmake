@@ -13,6 +13,7 @@ set(FlowPrecompiledHeaders
     ${FlowDir}/Scheduler.hpp
     ${FlowDir}/Task.hpp
     ${FlowDir}/Worker.hpp
+    ${FlowDir}/AtomicWait.hpp
 )
 
 set(FlowSources
